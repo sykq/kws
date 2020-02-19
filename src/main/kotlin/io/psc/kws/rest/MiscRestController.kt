@@ -39,11 +39,29 @@ class MiscRestController {
         val randomNumbers = List(iterations ?: 1000) { Random.Default.nextInt(1, 101) }.groupingBy { it }
                 .aggregate { _, accumulator: Int?, _, first ->
                     if (first) {
+                        // return @aggregate not necessary
                         1
                     } else {
+                        // return @aggregate not necessary
                         accumulator?.plus(1)
                     }
                 }.mapValues { it.value ?: 0 }
+
+        return mutableMapOf("randoms" to randomNumbers.toSortedMap(),
+                "totalIterations" to randomNumbers.values.reduce { a, b -> a + b })
+    }
+
+    /**
+     * Generates the given number [iterations] of random integers between 1 and 100 and groups them by number
+     * of occurrences into a Map.
+     */
+    @GetMapping(path = ["foldRandomInts"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getRandomsWithFold(@RequestParam iterations: Int?): Map<String, Any> {
+        val randomNumbers = List(iterations ?: 1000) { Random.Default.nextInt(1, 101) }
+                .fold(mutableMapOf<Int, Int>(), { acc, i ->
+                    acc.merge(i, 1) { a, _ -> a + 1 }
+                    return@fold acc
+                })
 
         return mutableMapOf("randoms" to randomNumbers.toSortedMap(),
                 "totalIterations" to randomNumbers.values.reduce { a, b -> a + b })
