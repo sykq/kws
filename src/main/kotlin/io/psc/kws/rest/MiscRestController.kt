@@ -26,6 +26,7 @@ class MiscRestController {
                         { accumulated, current -> accumulated.merge(current, 1) { a, _ -> a + 1 } },
                         { a, b -> a.mapValues { it.value + b[it.key]!! } })
 
-        return mutableMapOf("randoms" to randomNumbers.toSortedMap())
+        return mutableMapOf("randoms" to randomNumbers.toSortedMap(),
+                "totalIterations" to randomNumbers.values.reduce { a, b -> a + b })
     }
 }
