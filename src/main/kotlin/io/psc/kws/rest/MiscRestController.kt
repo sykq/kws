@@ -1,5 +1,6 @@
 package io.psc.kws.rest
 
+import mu.KotlinLogging
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,6 +14,8 @@ import kotlin.random.Random
 @RestController
 @RequestMapping("misc")
 class MiscRestController {
+
+    private val log = KotlinLogging.logger {}
 
     /**
      * Generates the given number [iterations] of random integers between 1 and 100 and groups them by number
@@ -62,6 +65,12 @@ class MiscRestController {
                     acc.merge(i, 1) { a, _ -> a + 1 }
                     return@fold acc
                 })
+
+        when (val size = randomNumbers.size) {
+            100 -> log.info { "$size" }
+            in 1..9 -> log.info { "size smaller than 10 ($size)" }
+            else -> log.info { "ok" }
+        }
 
         return mutableMapOf("randoms" to randomNumbers.toSortedMap(),
                 "totalIterations" to randomNumbers.values.reduce { a, b -> a + b })
