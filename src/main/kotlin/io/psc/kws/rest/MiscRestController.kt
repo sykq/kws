@@ -42,10 +42,10 @@ class MiscRestController {
         val randomNumbers = List(iterations ?: 1000) { Random.Default.nextInt(1, 101) }.groupingBy { it }
                 .aggregate { _, accumulator: Int?, _, first ->
                     if (first) {
-                        // return @aggregate not necessary
+                        // return@aggregate not necessary
                         1
                     } else {
-                        // return @aggregate not necessary
+                        // return@aggregate not necessary
                         accumulator?.plus(1)
                     }
                 }.mapValues { it.value ?: 0 }
