@@ -13,7 +13,7 @@ val DEFAULT_SPECIFICATION = DefaultSpecification(
         SpecificationAttribute("allowedNames", listOf("def", "ghi")))
 
 val requestedSpecification1: List<RequestedSpecificationAttribute<*>> =
-        listOf(RequestedSpecificationAttribute<Period>(
+        listOf(RequestedSpecificationAttribute(
                 SpecificationAttribute("period", Period.ofMonths(2)),
                 object : EvaluationFunction<Period> {
                     override fun apply(inputAttribute: SpecificationAttribute<Period>,
@@ -23,7 +23,7 @@ val requestedSpecification1: List<RequestedSpecificationAttribute<*>> =
                         else 0
                     }
                 }),
-                RequestedSpecificationAttribute<BigDecimal>(
+                RequestedSpecificationAttribute(
                         SpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
                         object : EvaluationFunction<BigDecimal> {
                             override fun apply(inputAttribute: SpecificationAttribute<BigDecimal>,
@@ -36,7 +36,7 @@ val requestedSpecification1: List<RequestedSpecificationAttribute<*>> =
         )
 
 val requestedSpecification2: List<RequestedSpecificationAttribute<*>> =
-        listOf(RequestedSpecificationAttribute<Period>(
+        listOf(RequestedSpecificationAttribute(
                 SpecificationAttribute("period", Period.ofMonths(2)),
                 object : EvaluationFunction<Period> {
                     override fun apply(inputAttribute: SpecificationAttribute<Period>,
@@ -46,7 +46,7 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<*>> =
                         else 0
                     }
                 }),
-                RequestedSpecificationAttribute<BigDecimal>(
+                RequestedSpecificationAttribute(
                         SpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
                         object : EvaluationFunction<BigDecimal> {
                             override fun apply(inputAttribute: SpecificationAttribute<BigDecimal>,
@@ -56,7 +56,7 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<*>> =
                                 else 0
                             }
                         }),
-                RequestedSpecificationAttribute<List<String>>(
+                RequestedSpecificationAttribute(
                         SpecificationAttribute("allowedNames", listOf("abc")),
                         object : EvaluationFunction<List<String>> {
                             override fun apply(inputAttribute: SpecificationAttribute<List<String>>,
@@ -69,7 +69,7 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<*>> =
         )
 
 val requestedSpecification3: List<RequestedSpecificationAttribute<*>> =
-        listOf(RequestedSpecificationAttribute<Period>(
+        listOf(RequestedSpecificationAttribute(
                 SpecificationAttribute("period", Period.ofMonths(2)),
                 object : EvaluationFunction<Period> {
                     override fun apply(inputAttribute: SpecificationAttribute<Period>,
@@ -79,9 +79,10 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<*>> =
                         else 0
                     }
                 }),
-                RequestedSpecificationAttribute<BigDecimal>(
+                RequestedSpecificationAttribute(
                         SpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
                         object : EvaluationFunction<BigDecimal> {
+
                             override fun apply(inputAttribute: SpecificationAttribute<BigDecimal>,
                                                targetAttribute: SpecificationAttribute<BigDecimal>): Int {
                                 return if (targetAttribute.value <= inputAttribute.value)
@@ -89,7 +90,7 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<*>> =
                                 else 0
                             }
                         }),
-                RequestedSpecificationAttribute<List<String>>(
+                RequestedSpecificationAttribute(
                         SpecificationAttribute("allowedNames", listOf("abc")),
                         object : EvaluationFunction<List<String>> {
                             override fun apply(inputAttribute: SpecificationAttribute<List<String>>,
@@ -110,7 +111,8 @@ fun filter(requirements: List<RequestedSpecificationAttribute<*>>): Double {
     val weight2 = evaluate(requirementsByName, DEFAULT_SPECIFICATION.price)
     val weight3 = evaluate(requirementsByName, DEFAULT_SPECIFICATION.allowedNames)
 
-    return (weight1 + weight2 + weight3) / 300.0
+    return (weight1 + weight2 + weight3) / requirements.fold(0.0,
+            { sum, specificationAttribute -> sum + specificationAttribute.evaluationFunction.weight })
 }
 
 private fun <T> evaluate(requirements: Map<String, RequestedSpecificationAttribute<*>>,
@@ -120,5 +122,5 @@ private fun <T> evaluate(requirements: Map<String, RequestedSpecificationAttribu
 
     return requestedSpecificationAttribute.let {
         it?.evaluationFunction?.apply(it.attribute, attribute)
-    } ?: EvaluationFunction.weight
+    } ?: 0
 }
