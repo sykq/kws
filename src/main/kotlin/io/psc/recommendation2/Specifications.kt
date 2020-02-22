@@ -1,6 +1,5 @@
 package io.psc.recommendation2
 
-import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Period
 
@@ -112,6 +111,14 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<out Specificat
                         })
         )
 
+val requestedSpecification4: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>> =
+        listOf(RequestedSpecificationAttribute(
+                PeriodSpecificationAttribute("period", Period.ofMonths(3)),
+                PeriodEvaluationFunction(LessThanEvaluationVisitor())
+        ), RequestedSpecificationAttribute(
+                BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(2999.90)),
+                BigDecimalEvaluationFunction(LessThanEvaluationVisitor())))
+
 
 fun filter(requirements: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>>): Double {
 
@@ -125,8 +132,9 @@ fun filter(requirements: List<RequestedSpecificationAttribute<out SpecificationA
             { sum, specificationAttribute -> sum + specificationAttribute.evaluationFunction.weight })
 }
 
-private fun <T> evaluate(requirements: Map<String, RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>>,
-                         attribute: SpecificationAttribute<T>): Int {
+private fun <T> evaluate(
+        requirements: Map<String, RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>>,
+        attribute: SpecificationAttribute<T>): Int {
     @Suppress("UNCHECKED_CAST")
     val requestedSpecificationAttribute = requirements[attribute.name] as? RequestedSpecificationAttribute<SpecificationAttribute<T>>
 
