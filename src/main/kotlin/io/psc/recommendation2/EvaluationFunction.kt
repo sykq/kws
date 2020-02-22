@@ -11,17 +11,11 @@ interface EvaluationFunction<T, O> : BiFunction<T, T, Int> {
     val weight: Int
         get() = EvaluationFunction.weight
 
-    var evaluationVisitor: EvaluationVisitor<O>?
-        get() = evaluationVisitor!!
-        set(value) {
-            this.evaluationVisitor = value
-        }
+    val evaluationVisitor: EvaluationVisitor<O>?
+        get() = null
 
-    var evaluationOptions: O?
-        get() = evaluationOptions!!
-        set(value) {
-            this.evaluationOptions = value
-        }
+    val evaluationOptions: O?
+        get() = null
 
     override fun apply(inputAttribute: T, targetAttribute: T): Int
 
