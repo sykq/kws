@@ -1,5 +1,8 @@
 package io.psc.recommendation2
 
+import io.psc.recommendation2.evaluation.AroundEvaluationOptions
+import io.psc.recommendation2.evaluation.AroundEvaluationVisitor
+import io.psc.recommendation2.evaluation.LessThanEvaluationVisitor
 import java.math.BigDecimal
 import java.time.Period
 
@@ -12,43 +15,33 @@ val DEFAULT_SPECIFICATION = DefaultSpecification(
         BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(2999.90)),
         StringListSpecificationAttribute("allowedNames", listOf("def", "ghi")))
 
-val requestedSpecification1: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>> =
+val requestedSpecification1: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
         listOf(RequestedSpecificationAttribute(
                 PeriodSpecificationAttribute("period", Period.ofMonths(2)),
-                object : EvaluationFunction<PeriodSpecificationAttribute> {
+                object : EvaluationFunction<PeriodSpecificationAttribute, Nothing> {
                     override fun apply(inputAttribute: PeriodSpecificationAttribute,
                                        targetAttribute: PeriodSpecificationAttribute): Int {
                         return if (!targetAttribute.value.minus(inputAttribute.value).isNegative)
                             weight
                         else 0
                     }
-
-                    override var evaluationVisitor: EvaluationVisitor?
-                        get() = TODO(
-                                "not implemented") //To change initializer of created properties use File | Settings | File Templates.
-                        set(value) {}
                 }),
                 RequestedSpecificationAttribute(
                         BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
-                        object : EvaluationFunction<BigDecimalSpecificationAttribute> {
+                        object : EvaluationFunction<BigDecimalSpecificationAttribute, Nothing> {
                             override fun apply(inputAttribute: BigDecimalSpecificationAttribute,
                                                targetAttribute: BigDecimalSpecificationAttribute): Int {
                                 return if (targetAttribute.value <= inputAttribute.value)
                                     weight
                                 else 0
                             }
-
-                            override var evaluationVisitor: EvaluationVisitor?
-                                get() = TODO(
-                                        "not implemented") //To change initializer of created properties use File | Settings | File Templates.
-                                set(value) {}
                         })
         )
 
-val requestedSpecification2: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>> =
+val requestedSpecification2: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
         listOf(RequestedSpecificationAttribute(
                 PeriodSpecificationAttribute("period", Period.ofMonths(2)),
-                object : EvaluationFunction<PeriodSpecificationAttribute> {
+                object : EvaluationFunction<PeriodSpecificationAttribute, Nothing> {
                     override fun apply(inputAttribute: PeriodSpecificationAttribute,
                                        targetAttribute: PeriodSpecificationAttribute): Int {
                         return if (!targetAttribute.value.minus(inputAttribute.value).isNegative)
@@ -58,7 +51,7 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<out Specificat
                 }),
                 RequestedSpecificationAttribute(
                         BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
-                        object : EvaluationFunction<BigDecimalSpecificationAttribute> {
+                        object : EvaluationFunction<BigDecimalSpecificationAttribute, Nothing> {
                             override fun apply(inputAttribute: BigDecimalSpecificationAttribute,
                                                targetAttribute: BigDecimalSpecificationAttribute): Int {
                                 return if (targetAttribute.value <= inputAttribute.value)
@@ -68,7 +61,7 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<out Specificat
                         }),
                 RequestedSpecificationAttribute(
                         StringListSpecificationAttribute("allowedNames", listOf("abc")),
-                        object : EvaluationFunction<StringListSpecificationAttribute> {
+                        object : EvaluationFunction<StringListSpecificationAttribute, Nothing> {
                             override fun apply(inputAttribute: StringListSpecificationAttribute,
                                                targetAttribute: StringListSpecificationAttribute): Int {
                                 return if (targetAttribute.value.intersect(inputAttribute.value).isNotEmpty())
@@ -78,10 +71,10 @@ val requestedSpecification2: List<RequestedSpecificationAttribute<out Specificat
                         })
         )
 
-val requestedSpecification3: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>> =
+val requestedSpecification3: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
         listOf(RequestedSpecificationAttribute(
                 PeriodSpecificationAttribute("period", Period.ofMonths(2)),
-                object : EvaluationFunction<PeriodSpecificationAttribute> {
+                object : EvaluationFunction<PeriodSpecificationAttribute, Nothing> {
                     override fun apply(inputAttribute: PeriodSpecificationAttribute,
                                        targetAttribute: PeriodSpecificationAttribute): Int {
                         return if (!targetAttribute.value.minus(inputAttribute.value).isNegative)
@@ -91,7 +84,7 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<out Specificat
                 }),
                 RequestedSpecificationAttribute(
                         BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(3000.00)),
-                        object : EvaluationFunction<BigDecimalSpecificationAttribute> {
+                        object : EvaluationFunction<BigDecimalSpecificationAttribute, Nothing> {
                             override fun apply(inputAttribute: BigDecimalSpecificationAttribute,
                                                targetAttribute: BigDecimalSpecificationAttribute): Int {
                                 return if (targetAttribute.value <= inputAttribute.value)
@@ -101,7 +94,7 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<out Specificat
                         }),
                 RequestedSpecificationAttribute(
                         StringListSpecificationAttribute("allowedNames", listOf("abc")),
-                        object : EvaluationFunction<StringListSpecificationAttribute> {
+                        object : EvaluationFunction<StringListSpecificationAttribute, Nothing> {
                             override fun apply(inputAttribute: StringListSpecificationAttribute,
                                                targetAttribute: StringListSpecificationAttribute): Int {
                                 return if (targetAttribute.value.intersect(inputAttribute.value).isEmpty())
@@ -111,16 +104,34 @@ val requestedSpecification3: List<RequestedSpecificationAttribute<out Specificat
                         })
         )
 
-val requestedSpecification4: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>> =
+val requestedSpecification4: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
         listOf(RequestedSpecificationAttribute(
                 PeriodSpecificationAttribute("period", Period.ofMonths(3)),
-                PeriodEvaluationFunction(LessThanEvaluationVisitor())
+                PeriodEvaluationFunction(
+                        LessThanEvaluationVisitor<Nothing>())
         ), RequestedSpecificationAttribute(
-                BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(2999.90)),
-                BigDecimalEvaluationFunction(LessThanEvaluationVisitor())))
+                BigDecimalSpecificationAttribute("price", BigDecimal.valueOf(2999.99)),
+                BigDecimalEvaluationFunction(
+                        LessThanEvaluationVisitor<Nothing>())))
+
+val requestedSpecification5: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
+        listOf(RequestedSpecificationAttribute(
+                PeriodSpecificationAttribute("period", Period.ofMonths(2)),
+                PeriodEvaluationFunction(
+                        AroundEvaluationVisitor<Period>(),
+                        AroundEvaluationOptions(Period.ofMonths(1), Period.ofMonths(1)))
+        ))
+
+val requestedSpecification6: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>> =
+        listOf(RequestedSpecificationAttribute(
+                PeriodSpecificationAttribute("period", Period.ofMonths(3)),
+                PeriodEvaluationFunction(
+                        AroundEvaluationVisitor<Period>(),
+                        AroundEvaluationOptions(Period.ofMonths(1), Period.ofMonths(1)))
+        ))
 
 
-fun filter(requirements: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>>): Double {
+fun filter(requirements: List<RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>>): Double {
 
     val requirementsByName = requirements.associateBy { it.attribute.name }
 
@@ -133,10 +144,10 @@ fun filter(requirements: List<RequestedSpecificationAttribute<out SpecificationA
 }
 
 private fun <T> evaluate(
-        requirements: Map<String, RequestedSpecificationAttribute<out SpecificationAttribute<out Any>>>,
+        requirements: Map<String, RequestedSpecificationAttribute<out SpecificationAttribute<out Any>, *>>,
         attribute: SpecificationAttribute<T>): Int {
     @Suppress("UNCHECKED_CAST")
-    val requestedSpecificationAttribute = requirements[attribute.name] as? RequestedSpecificationAttribute<SpecificationAttribute<T>>
+    val requestedSpecificationAttribute = requirements[attribute.name] as? RequestedSpecificationAttribute<SpecificationAttribute<T>, *>
 
     return requestedSpecificationAttribute.let {
         it?.evaluationFunction?.apply(it.attribute, attribute)
