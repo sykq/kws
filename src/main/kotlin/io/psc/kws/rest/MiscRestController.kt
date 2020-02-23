@@ -39,7 +39,8 @@ class MiscRestController {
      */
     @GetMapping(path = ["randomInts"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRandoms(@RequestParam iterations: Int?): Map<String, Any> {
-        val randomNumbers = List(iterations ?: 1000) { Random.Default.nextInt(1, 101) }.groupingBy { it }
+        val randomNumbers = List(iterations ?: 1000) { Random.Default.nextInt(1, 101) }
+                .groupingBy { it }
                 .aggregate { _, accumulator: Int?, _, first ->
                     if (first) {
                         // return@aggregate not necessary
