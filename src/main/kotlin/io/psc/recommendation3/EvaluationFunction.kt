@@ -1,6 +1,6 @@
-package io.psc.recommendation2
+package io.psc.recommendation3
 
-import io.psc.recommendation2.evaluation.EvaluationVisitor
+import io.psc.recommendation3.evaluation.EvaluationVisitor
 import java.util.function.BiFunction
 
 interface EvaluationFunction<T, O> : BiFunction<T, T, Int> {
@@ -21,9 +21,9 @@ interface EvaluationFunction<T, O> : BiFunction<T, T, Int> {
 
 }
 
-class PeriodEvaluationFunction<T>(
-        override var evaluationVisitor: EvaluationVisitor<T>?,
-        override var evaluationOptions: T? = null) : EvaluationFunction<PeriodSpecificationAttribute, T> {
+class PeriodEvaluationFunction<O>(
+        override var evaluationVisitor: EvaluationVisitor<O>?,
+        override var evaluationOptions: O? = null) : EvaluationFunction<PeriodSpecificationAttribute, O> {
     override fun apply(inputAttribute: PeriodSpecificationAttribute,
                        targetAttribute: PeriodSpecificationAttribute): Int {
         return evaluationVisitor!!.visit(inputAttribute, targetAttribute, weight, evaluationOptions)
@@ -31,9 +31,9 @@ class PeriodEvaluationFunction<T>(
 }
 
 
-class BigDecimalEvaluationFunction<T>(
-        override var evaluationVisitor: EvaluationVisitor<T>?,
-        override var evaluationOptions: T? = null) : EvaluationFunction<BigDecimalSpecificationAttribute, T> {
+class BigDecimalEvaluationFunction<O>(
+        override var evaluationVisitor: EvaluationVisitor<O>?,
+        override var evaluationOptions: O? = null) : EvaluationFunction<BigDecimalSpecificationAttribute, O> {
     override fun apply(inputAttribute: BigDecimalSpecificationAttribute,
                        targetAttribute: BigDecimalSpecificationAttribute): Int {
         return evaluationVisitor!!.visit(inputAttribute, targetAttribute, weight, evaluationOptions)
@@ -41,18 +41,18 @@ class BigDecimalEvaluationFunction<T>(
 }
 
 
-class StringListEvaluationFunction<T>(
-        override var evaluationVisitor: EvaluationVisitor<T>?,
-        override var evaluationOptions: T? = null) : EvaluationFunction<StringListSpecificationAttribute, T> {
+class StringListEvaluationFunction<O>(
+        override var evaluationVisitor: EvaluationVisitor<O>?,
+        override var evaluationOptions: O? = null) : EvaluationFunction<StringListSpecificationAttribute, O> {
     override fun apply(inputAttribute: StringListSpecificationAttribute,
                        targetAttribute: StringListSpecificationAttribute): Int {
         return evaluationVisitor!!.visit(inputAttribute, targetAttribute, weight, evaluationOptions)
     }
 }
 
-class StringEvaluationFunction<T>(
-        override var evaluationVisitor: EvaluationVisitor<T>?,
-        override var evaluationOptions: T? = null) : EvaluationFunction<StringSpecificationAttribute, T> {
+class StringEvaluationFunction<O>(
+        override var evaluationVisitor: EvaluationVisitor<O>?,
+        override var evaluationOptions: O? = null) : EvaluationFunction<StringSpecificationAttribute, O> {
     override fun apply(inputAttribute: StringSpecificationAttribute,
                        targetAttribute: StringSpecificationAttribute): Int {
         return evaluationVisitor!!.visit(inputAttribute, targetAttribute, weight, evaluationOptions)
