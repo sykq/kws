@@ -50,6 +50,7 @@ class MiscRestController {
                         accumulator?.plus(1)
                     }
                 }.mapValues { it.value ?: 0 }
+                .also { it.entries.forEach { (key, value) -> log.info { "$key : $value " } } }
 
         return mutableMapOf("randoms" to randomNumbers.toSortedMap(),
                 "totalIterations" to randomNumbers.values.reduce { a, b -> a + b })
