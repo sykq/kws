@@ -16,17 +16,19 @@ internal class MiscUtilsTest {
         var expected = "abcdefgh"
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToLowerCase().apply(input)).isEqualTo(expected)
+        assertThat(trimToLowerCase(input)).isEqualTo(expected)
 
         input = "     "
         expected = ""
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToLowerCase().apply(input)).isEqualTo(expected)
+        assertThat(trimToLowerCase(input)).isEqualTo(expected)
 
         input = null
         expected = ""
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToLowerCase().apply(input)).isEqualTo(expected)
-
+        assertThat(trimToLowerCase(input)).isEqualTo(expected)
     }
 
     @Test
@@ -35,16 +37,20 @@ internal class MiscUtilsTest {
         var expected = "ABCDEFGH"
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToUpperCase().apply(input)).isEqualTo(expected)
+        assertThat(trimToUpperCase(input)).isEqualTo(expected)
 
         input = "     "
         expected = ""
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToUpperCase().apply(input)).isEqualTo(expected)
+        assertThat(trimToUpperCase(input)).isEqualTo(expected)
 
         input = null
         expected = ""
         log.info { "input: $input -> expected $expected" }
         assertThat(trimToUpperCase().apply(input)).isEqualTo(expected)
+        assertThat(trimToUpperCase(input)).isEqualTo(expected)
+
     }
 
 }
