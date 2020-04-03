@@ -5,10 +5,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.context.support.beans
-import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
-import org.springframework.web.server.WebFilterChain
-import reactor.core.publisher.Mono
 
 @SpringBootApplication
 class KwsApplication
