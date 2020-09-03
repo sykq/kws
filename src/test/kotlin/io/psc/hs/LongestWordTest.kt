@@ -15,4 +15,11 @@ internal class LongestWordTest {
                 .map { it.length }
                 .max()!!.toString())
     }
+
+    @Test
+    fun testFindLongestWordWithLinesAsInput() {
+        log.info(File("src/test/resources/words_sequence.txt").readLines()
+                .map { it.length }
+                .max()!!.toString())
+    }
 }
