@@ -1,4 +1,4 @@
-package io.psc.ksw.utils
+package io.psc.kws.utils
 
 import io.psc.kws.utils.trimToLowerCase
 import io.psc.kws.utils.trimToUpperCase
