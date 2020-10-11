@@ -13,13 +13,13 @@ internal class LongestWordTest {
         log.info(File("src/test/resources/words_sequence.txt").readText()
                 .split(" ", "\n", "\r")
                 .map { it.length }
-                .max()!!.toString())
+                .maxOrNull()!!.toString())
     }
 
     @Test
     fun testFindLongestWordWithLinesAsInput() {
         log.info(File("src/test/resources/words_sequence.txt").readLines()
                 .map { it.length }
-                .max()!!.toString())
+                .maxOrNull()!!.toString())
     }
 }
