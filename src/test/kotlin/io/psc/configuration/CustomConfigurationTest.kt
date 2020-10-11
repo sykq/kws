@@ -14,22 +14,22 @@ internal class CustomConfigurationTest {
     fun testConfigure() {
         val targetDate = ZonedDateTime.of(2021, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))
 
-        val customConfiguration = CustomConfiguration()
-                .configure {
-                    startValue = 55
-                    randomName()
-                    subConfiguration {
-                        mappings["key"] = "value"
-                        mappings["int"] = 5618
-                        this.targetDate = targetDate
-                    }
-                }
+        val customConfiguration = CustomConfiguration {
+            startValue = 55
+            randomName()
+            subConfiguration {
+                mappings["key"] = "value"
+                mappings["int"] = 5618
+                this.targetDate = targetDate
+            }
+        }
 
         log.info { customConfiguration.name }
 
         assertThat(customConfiguration.name).isNotBlank
         assertThat(customConfiguration.startValue).isEqualTo(55)
         assertThat(customConfiguration.subConfiguration.targetDate).isEqualTo(targetDate)
+        assertThat(customConfiguration.subConfiguration.mappings).containsKey("int")
 
         customConfiguration + { ids.add("1234") }
 

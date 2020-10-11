@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.properties.Delegates
 
-class CustomConfiguration {
+class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
     var startValue = 0
         set(startValue) {
             if (startValue < 0) {
@@ -15,8 +15,12 @@ class CustomConfiguration {
             field = startValue
         }
     var name = ""
-    var subConfiguration: SubConfiguration = SubConfiguration()
+    var subConfiguration: SubConfiguration = SubConfiguration{}
     val ids = mutableListOf<String>()
+
+    init {
+        init.invoke(this)
+    }
 
     fun randomName() {
         name = UUID.randomUUID().toString()
@@ -35,7 +39,7 @@ class CustomConfiguration {
         this.configure(configure)
     }
 
-    class SubConfiguration {
+    class SubConfiguration(init: SubConfiguration.() -> Unit) {
         private val log = KotlinLogging.logger {}
 
         val mappings = mutableMapOf<String, Any>()
@@ -45,6 +49,10 @@ class CustomConfiguration {
                 log.info("zonedDateTime is too far in the past")
             }
             return@vetoable changeAllowed
+        }
+
+        init {
+            init.invoke(this)
         }
 
         fun configure(init: SubConfiguration.() -> Unit): SubConfiguration {
