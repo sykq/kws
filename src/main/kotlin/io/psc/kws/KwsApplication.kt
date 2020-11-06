@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
                                     .build()
                         }
                         bean {
-                            // WebFilter to add the server context-path to a request's url
+                            // WebFilter to add the server context-path to a request's url ("redirect")
                             val contextPath = ref<ServerProperties>().servlet.contextPath
                             WebFilter { exchange, chain ->
                                 val request = exchange.request
