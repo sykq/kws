@@ -15,8 +15,9 @@ class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
             field = startValue
         }
     var name = ""
-    var subConfiguration: SubConfiguration = SubConfiguration{}
+    var subConfiguration: SubConfiguration = SubConfiguration {}
     val ids = mutableListOf<String>()
+    val valueGenerators = mutableListOf<ValueGenerator<Any>>()
 
     init {
         init.invoke(this)
@@ -24,6 +25,10 @@ class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
 
     fun randomName() {
         name = UUID.randomUUID().toString()
+    }
+
+    fun valueGenerator(valueGenerator: ValueGenerator<Any>) {
+        valueGenerators.add(valueGenerator)
     }
 
     fun subConfiguration(init: SubConfiguration.() -> Unit) {
@@ -60,4 +65,10 @@ class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
             return this
         }
     }
+}
+
+fun interface ValueGenerator<T> {
+
+    fun get(): T
+
 }

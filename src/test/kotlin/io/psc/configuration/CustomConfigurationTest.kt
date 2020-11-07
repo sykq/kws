@@ -22,6 +22,7 @@ internal class CustomConfigurationTest {
                 mappings["int"] = 5618
                 this.targetDate = targetDate
             }
+            valueGenerator { "Hello!" }
         }
 
         log.info { customConfiguration.name }
@@ -30,6 +31,7 @@ internal class CustomConfigurationTest {
         assertThat(customConfiguration.startValue).isEqualTo(55)
         assertThat(customConfiguration.subConfiguration.targetDate).isEqualTo(targetDate)
         assertThat(customConfiguration.subConfiguration.mappings).containsKey("int")
+        assertThat(customConfiguration.valueGenerators).size().isEqualTo(1)
 
         customConfiguration + { ids.add("1234") }
 
