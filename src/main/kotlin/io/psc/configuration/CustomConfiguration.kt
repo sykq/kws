@@ -6,7 +6,9 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.properties.Delegates
 
-class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
+class CustomConfiguration<T>(init: CustomConfiguration<T>.() -> Unit) {
+    val log = KotlinLogging.logger {}
+
     var startValue = 0
         set(startValue) {
             if (startValue < 0) {
@@ -18,6 +20,7 @@ class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
     var subConfiguration: SubConfiguration = SubConfiguration {}
     val ids = mutableListOf<String>()
     val valueGenerators = mutableListOf<ValueGenerator<Any>>()
+    var specificValuePair : Pair<T, *>? = null
 
     init {
         init.invoke(this)
@@ -35,12 +38,22 @@ class CustomConfiguration(init: CustomConfiguration.() -> Unit) {
         subConfiguration = subConfiguration.configure(init)
     }
 
-    fun configure(init: CustomConfiguration.() -> Unit): CustomConfiguration {
+    fun <U> specificValuePair(specificValuePair: Pair<T, U>){
+        val typeFromClass = specificValuePair.first!!::class.java
+        val providedType = specificValuePair.second!!::class.java
+        log.info { "typeFromClass = $typeFromClass, providedType = $providedType" }
+        this.specificValuePair = specificValuePair
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified U> getSpecificValuePairWithReifiedType(): Pair<T, U>? = specificValuePair as Pair<T, U>?
+
+    inline fun configure(crossinline init: CustomConfiguration<T>.() -> Unit): CustomConfiguration<T> {
         init.invoke(this)
         return this
     }
 
-    infix operator fun plus(configure: CustomConfiguration.() -> Unit) {
+    inline infix operator fun plus(crossinline configure: CustomConfiguration<T>.() -> Unit) {
         this.configure(configure)
     }
 

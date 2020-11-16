@@ -14,7 +14,7 @@ internal class CustomConfigurationTest {
     fun testConfigure() {
         val targetDate = ZonedDateTime.of(2021, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))
 
-        val customConfiguration = CustomConfiguration {
+        val customConfiguration = CustomConfiguration<String> {
             startValue = 55
             randomName()
             subConfiguration {
@@ -23,6 +23,7 @@ internal class CustomConfigurationTest {
                 this.targetDate = targetDate
             }
             valueGenerator { "Hello!" }
+            specificValuePair("Test" to 11)
         }
 
         log.info { customConfiguration.name }
@@ -32,6 +33,10 @@ internal class CustomConfigurationTest {
         assertThat(customConfiguration.subConfiguration.targetDate).isEqualTo(targetDate)
         assertThat(customConfiguration.subConfiguration.mappings).containsKey("int")
         assertThat(customConfiguration.valueGenerators).size().isEqualTo(1)
+        assertThat(customConfiguration.specificValuePair).isEqualTo("Test" to 11)
+
+        val castedSpecificValuePair = customConfiguration.getSpecificValuePairWithReifiedType<Pair<String, Int>>()
+        assertThat(castedSpecificValuePair).isEqualTo("Test" to 11)
 
         customConfiguration + { ids.add("1234") }
 
@@ -44,6 +49,31 @@ internal class CustomConfigurationTest {
         }
 
         assertThat(customConfiguration.subConfiguration.targetDate).isEqualTo(targetDate)
+    }
+
+    @Test
+    fun testConfigureWithIntegerGeneric() {
+
+        val customConfiguration = CustomConfiguration<Int> {
+            startValue = 4
+            randomName()
+            valueGenerator { 777 }
+            valueGenerator { "abc" }
+            specificValuePair(1234 to "xyz")
+            ids.add("1234")
+        }
+
+        log.info { customConfiguration.name }
+
+        assertThat(customConfiguration.name).isNotBlank
+        assertThat(customConfiguration.startValue).isEqualTo(4)
+        assertThat(customConfiguration.valueGenerators).size().isEqualTo(2)
+        assertThat(customConfiguration.specificValuePair).isEqualTo(1234 to "xyz")
+
+        customConfiguration + { ids.add("4321") }
+
+        assertThat(customConfiguration.ids).contains("1234", "4321")
+
     }
 
 }
