@@ -20,7 +20,7 @@ class CustomConfiguration<T>(init: CustomConfiguration<T>.() -> Unit) {
     var subConfiguration: SubConfiguration = SubConfiguration {}
     val ids = mutableListOf<String>()
     val valueGenerators = mutableListOf<ValueGenerator<Any>>()
-    var specificValuePair : Pair<T, *>? = null
+    var specificValuePair: Pair<T, *>? = null
 
     init {
         init.invoke(this)
@@ -38,7 +38,7 @@ class CustomConfiguration<T>(init: CustomConfiguration<T>.() -> Unit) {
         subConfiguration = subConfiguration.configure(init)
     }
 
-    fun <U> specificValuePair(specificValuePair: Pair<T, U>){
+    fun <U> specificValuePair(specificValuePair: Pair<T, U>) {
         val typeFromClass = specificValuePair.first!!::class.java
         val providedType = specificValuePair.second!!::class.java
         log.info { "typeFromClass = $typeFromClass, providedType = $providedType" }
