@@ -46,6 +46,8 @@ internal class CustomConfigurationTest {
             subConfiguration {
                 this.targetDate = ZonedDateTime.of(1999, 12, 7, 13, 38, 42, 908451153, ZoneId.of("UTC"))
             }
+            // return is not allowed due to crossinline lambda
+            //if (this.name != "") return
         }
 
         assertThat(customConfiguration.subConfiguration.targetDate).isEqualTo(targetDate)
